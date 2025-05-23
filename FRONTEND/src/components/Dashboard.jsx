@@ -150,7 +150,15 @@ function Dashboard() {
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      setError("Authentication error: " + (error.message || "Unknown error"));
+      
+      // Check if it's an authentication error
+      if (error.response && error.response.status === 401) {
+        localStorage.removeItem('token'); // Clear invalid token
+        setError("Your session has expired. Please log in again.");
+      } else {
+        setError("Authentication error: " + (error.message || "Unknown error"));
+      }
+      
       navigate("/login");
     } finally {
       setLoadingUser(false);
