@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const loginUser = async (email, password) => {
     const { data } = await axios.post(
-        `${API_URL}/api/auth/login`,
+        `https://url-shortner-eight-lime.vercel.app/api/auth/login`,
         { email, password },
         { withCredentials: true }
     );
@@ -15,7 +15,7 @@ export const loginUser = async (email, password) => {
 
 export const registerUser = async (name, email, password) => {
     const { data } = await axios.post(
-        `${API_URL}/api/auth/register`,
+        `https://url-shortner-eight-lime.vercel.app/api/auth/register`,
         { name, email, password },
         { withCredentials: true }
     );
@@ -24,7 +24,7 @@ export const registerUser = async (name, email, password) => {
 
 export const logoutUser = async () => {
     const { data } = await axios.post(
-        `${API_URL}/api/auth/logout`,
+        `https://url-shortner-eight-lime.vercel.app/api/auth/logout`,
         {},
         { withCredentials: true }
     );
@@ -34,7 +34,7 @@ export const logoutUser = async () => {
 export const getCurrentUser = async () => {
     try {
         const { data } = await axios.get(
-            `${API_URL}/api/auth/me`,
+            `https://url-shortner-eight-lime.vercel.app/api/auth/me`,
             { withCredentials: true }
         );
         return data;
