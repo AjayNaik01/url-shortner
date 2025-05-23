@@ -1,22 +1,23 @@
 import axios from "axios";
 
-// Set default axios config for all requests
 axios.defaults.withCredentials = true;
 
-//it's used when not user is not logged in
+const API_URL = process.env.REACT_APP_API_URL;
+
+// it's used when user is not logged in
 export const createShortUrl = async (url) => {
-    return await axios.post("http://localhost:3000/api/create", { url });
-}
+    return await axios.post(`${API_URL}/api/create`, { url });
+};
 
-//store user details along url
+// store user details along with url
 export const createShortUrlWithUserId = async (url) => {
-    return await axios.post("http://localhost:3000/api/shorten", { url });
-}
+    return await axios.post(`${API_URL}/api/shorten`, { url });
+};
 
-//same ^
+// same ^
 export const customShortUrl = async (full_url, short_url) => {
     return await axios.post(
-        "http://localhost:3000/api/custom",
+        `${API_URL}/api/custom`,
         { full_url, short_url },
         { withCredentials: true }
     );
@@ -24,7 +25,7 @@ export const customShortUrl = async (full_url, short_url) => {
 
 export const getAllUrl = async () => {
     return await axios.get(
-        "http://localhost:3000/api/urls",
+        `${API_URL}/api/urls`,
         { withCredentials: true }
     );
 };
