@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 // it's used when user is not logged in
 export const createShortUrl = async (url) => {
-    return await axios.post(`${API_URL}/api/create`, { url });
+    return await axios.post(`https://url-shortner-eight-lime.vercel.app/api/create`, { url });
 };
 
 // store user details along with url
