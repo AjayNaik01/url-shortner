@@ -7,21 +7,18 @@ import { redirectShortUrl } from "./src/controller/shortul.controller.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-
-
-// Load environment variables
-
 dotenv.config();
 
 const app = express();
+
+// Middlewares
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", // OR use "*" in prod
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,21 +26,13 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api", shortUrlRoutes);        // POST /api/create
 app.get("/:id", redirectShortUrl);      // GET /:shortUrlId
-
 app.use("/api/auth", auth_routes);
-
-
-// Home test route
 app.get("/", (req, res) => {
     res.send("Welcome to the URL Shortener API");
 });
 
-// Connect DB and start server
-const startServer = async () => {
-    await connectDB();
-    app.listen(port, () => {
-        console.log(`Server running at http://localhost:${port}`);
-    });
-};
+// MongoDB connection
+connectDB(); // Just connect; don't start listening
 
-startServer();
+// ✅ Export the Express app for Vercel
+export default app;
