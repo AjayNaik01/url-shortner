@@ -74,7 +74,7 @@ npm install
 Create a `.env` file in the FRONTEND directory with:
 
 ```
-REACT_APP_API_URL=http://localhost:3000/
+REACT_APP_API_URL=http://localhost:3000
 ```
 
 Start the frontend development server:
