@@ -11,13 +11,13 @@ export const createShortUrl = async (url) => {
 
 // store user details along with url
 export const createShortUrlWithUserId = async (url) => {
-    return await axios.post(`${API_URL}/api/shorten`, { url });
+    return await axios.post(`https://url-shortner-eight-lime.vercel.app/api/shorten`, { url });
 };
 
 // same ^
 export const customShortUrl = async (full_url, short_url) => {
     return await axios.post(
-        `${API_URL}/api/custom`,
+        `https://url-shortner-eight-lime.vercel.app/api/custom`,
         { full_url, short_url },
         { withCredentials: true }
     );
@@ -25,7 +25,7 @@ export const customShortUrl = async (full_url, short_url) => {
 
 export const getAllUrl = async () => {
     return await axios.get(
-        `${API_URL}/api/urls`,
+        `https://url-shortner-eight-lime.vercel.app/api/urls`,
         { withCredentials: true }
     );
 };
