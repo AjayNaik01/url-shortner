@@ -14,7 +14,7 @@ const app = express();
 // Middlewares
 app.use(cookieParser());
 app.use(cors({
-    origin: "https://url-shortner-eight-lime.vercel.app", 
+    origin: "https://url-shortner-fonend.vercel.app", 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
