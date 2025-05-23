@@ -1,18 +1,19 @@
-import { nanoid } from "nanoid";
-import { cookieOption } from "../config/config.js";
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
-export const generateNanoId = (length = 7) => {
-    return nanoid(length);
-};
+// Get JWT secret from environment variables or use a default (for development only)
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+// Sign a token with the user ID
 export const signToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-    });
+    // Make sure the payload includes the user ID
+    return jwt.sign(
+        { id: payload.id || payload }, 
+        JWT_SECRET, 
+        { expiresIn: '7d' }
+    );
 };
 
+// Verify a token and return the decoded payload
 export const verifyToken = (token) => {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded.id;
+    return jwt.verify(token, JWT_SECRET);
 };
