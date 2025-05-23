@@ -1,31 +1,32 @@
 import axios from "axios";
 
-// ✅ Optional: Set this once for all Axios requests
 axios.defaults.withCredentials = true;
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const loginUser = async (email, password) => {
     const { data } = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         { email, password },
-        { withCredentials: true } // 👈 Ensures cookies are sent
+        { withCredentials: true }
     );
     return data;
 };
 
 export const registerUser = async (name, email, password) => {
     const { data } = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         { name, email, password },
-        { withCredentials: true } // 👈 Ensures cookies are sent
+        { withCredentials: true }
     );
     return data;
 };
 
 export const logoutUser = async () => {
     const { data } = await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        `${API_URL}/api/auth/logout`,
         {},
-        { withCredentials: true } // 👈 Include credentials for logout
+        { withCredentials: true }
     );
     return data;
 };
@@ -33,7 +34,7 @@ export const logoutUser = async () => {
 export const getCurrentUser = async () => {
     try {
         const { data } = await axios.get(
-            "http://localhost:3000/api/auth/me",
+            `${API_URL}/api/auth/me`,
             { withCredentials: true }
         );
         return data;
