@@ -13,12 +13,25 @@ const app = express();
 
 // Middlewares
 app.use(cookieParser());
+
+const allowedOrigins = [
+  "https://url-shortner-fonend.vercel.app",
+  "https://url-shortner-fonend-git-main-ajaynaik01s-projects.vercel.app",
+  "https://url-shortner-fonend-jgltdn956-ajaynaik01s-projects.vercel.app"
+];
+
 app.use(cors({
-    origin: "https://url-shortner-fonend.vercel.app", 
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
