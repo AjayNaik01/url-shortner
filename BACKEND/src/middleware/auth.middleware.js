@@ -11,9 +11,8 @@ export const authMiddleware = async (req, res, next) => {
         token = authHeader.split(' ')[1];
     }
     
-    console.log("Token received:", token ? "Yes" : "No");
-    console.log("Auth header:", authHeader || "None");
-    console.log("Cookies received:", req.cookies);
+    console.log("Auth check - Headers:", JSON.stringify(req.headers['authorization'] || "None"));
+    console.log("Auth check - Cookies:", JSON.stringify(req.cookies || "None"));
 
     if (!token) {
         console.log("No token found in cookies or Authorization header");
@@ -22,13 +21,11 @@ export const authMiddleware = async (req, res, next) => {
 
     try {
         const decoded = await verifyToken(token);
-        console.log("Decoded token:", decoded);
-
+        
         // If the token payload contains an id property
         const userId = decoded.id || decoded;
         
         const user = await findUserById(userId);
-        console.log("User Found:", user ? "Yes" : "No");
 
         if (!user) {
             console.log("User not found with ID:", userId);
@@ -42,3 +39,5 @@ export const authMiddleware = async (req, res, next) => {
         return res.status(401).json({ message: "Authentication failed: " + error.message });
     }
 };
+
+
