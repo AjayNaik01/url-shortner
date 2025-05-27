@@ -1,8 +1,22 @@
 import axios from "axios";
 
-axios.defaults.withCredentials = true;
+// Create a consistent API instance with auth handling
+const api = axios.create({
+    baseURL: 'https://url-shortner-eight-lime.vercel.app',
+    withCredentials: true
+});
 
-const API_URL = process.env.REACT_APP_API_URL;
+// Add token to all requests
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 // it's used when user is not logged in
 export const createShortUrl = async (url) => {
@@ -16,16 +30,10 @@ export const createShortUrlWithUserId = async (url) => {
 
 // same ^
 export const customShortUrl = async (full_url, short_url) => {
-    return await axios.post(
-        `https://url-shortner-eight-lime.vercel.app/api/custom`,
-        { full_url, short_url },
-        { withCredentials: true }
-    );
+    return await api.post("/api/custom", { full_url, short_url });
 };
 
 export const getAllUrl = async () => {
-    return await axios.get(
-        `https://url-shortner-eight-lime.vercel.app/api/urls`,
-        { withCredentials: true }
-    );
+    return await api.get("/api/urls");
 };
+
