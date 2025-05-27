@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Get the API base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL =  'https://url-shortner-eight-lime.vercel.app';
 
 // Set default axios config
 axios.defaults.withCredentials = true;
