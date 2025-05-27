@@ -33,9 +33,7 @@ function Dashboard() {
 
       if (Array.isArray(response.data)) {
         setUserUrls(response.data);
-        console.log(
-          `Loaded ${response.data.length} URLs for user ${user.name}`
-        );
+        console.log(`Loaded ${response.data.length} URLs for user ${user.name}`);
       } else {
         console.error("Unexpected response format:", response.data);
         setUserUrls([]);
@@ -43,10 +41,22 @@ function Dashboard() {
     } catch (error) {
       console.error("Error fetching URLs:", error);
       if (error.response && error.response.status === 401) {
-        console.log("User not authenticated");
-        setError("Please log in to view your URLs");
-        // Force re-authentication
-        navigate("/login");
+        console.log("Authentication error - token may be invalid");
+        // Don't immediately redirect - try refreshing the token first
+        try {
+          // Try to refresh user data instead of immediately logging out
+          await fetchCurrentUser();
+          // If successful, try fetching URLs again
+          const response = await getAllUrl();
+          if (Array.isArray(response.data)) {
+            setUserUrls(response.data);
+          }
+        } catch (refreshError) {
+          console.error("Failed to refresh authentication:", refreshError);
+          setError("Your session has expired. Please log in again.");
+          // Only redirect after refresh attempt fails
+          navigate("/login");
+        }
       } else {
         setError(`Error loading URLs: ${error.message}`);
       }
@@ -524,3 +534,4 @@ function Dashboard() {
   );
 }
 export default Dashboard;
+
