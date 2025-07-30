@@ -17,6 +17,9 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [loadingUrls, setLoadingUrls] = useState(false);
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const qrRef = useRef(null);
 
@@ -28,7 +31,7 @@ function Dashboard() {
       return;
     }
 
-    setLoading(true);
+    setLoadingUrls(true);
     try {
       console.log("Fetching URLs for user:", user.name, user._id);
       const response = await getAllUrl();
@@ -66,13 +69,14 @@ function Dashboard() {
         setError(`Error loading URLs: ${error.message}`);
       }
     } finally {
-      setLoading(false);
+      setLoadingUrls(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setShortUrl("");
     setCopied(false);
 
@@ -81,12 +85,19 @@ function Dashboard() {
       return;
     }
 
+    setSubmitting(true);
     try {
       const response = await customShortUrl(url, slug);
       console.log(response.data);
       setShortUrl(response.data.shortUrl);
+      setSuccess("✅ URL shortened successfully!");
+      // Clear form after successful submission
+      setUrl("");
+      setSlug("");
       // Refresh the list of URLs after creating a new one
       fetchUserUrls();
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
       console.error("URL Error:", error);
 
@@ -111,6 +122,8 @@ function Dashboard() {
         // Something happened in setting up the request that triggered an Error
         setError(`⚠️ Request error: ${error.message}`);
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -198,32 +211,40 @@ function Dashboard() {
     const style = document.createElement("style");
     style.textContent = `
       .custom-scrollbar::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
       }
       .custom-scrollbar::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
+        background: rgba(31, 41, 55, 0.5);
+        border-radius: 6px;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: rgba(34, 197, 94, 0.5);
-        border-radius: 4px;
+        background: rgba(34, 197, 94, 0.6);
+        border-radius: 6px;
+        transition: background 0.2s ease;
       }
       .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: rgba(34, 197, 94, 0.8);
+        background: rgba(34, 197, 94, 0.9);
       }
 
       /* Loader animation */
       .loader {
-        width: 24px;
-        height: 24px;
-        border: 3px solid rgba(34, 197, 94, 0.3);
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(34, 197, 94, 0.2);
         border-radius: 50%;
         border-top-color: #22c55e;
-        animation: spin 1s ease-in-out infinite;
+        border-right-color: #22c55e;
+        animation: spin 0.8s linear infinite;
       }
 
       @keyframes spin {
         to { transform: rotate(360deg); }
+      }
+
+      /* Pulse animation for loading states */
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
     `;
     document.head.appendChild(style);
@@ -240,11 +261,25 @@ function Dashboard() {
     }
   }, [user]);
 
+  // Show loading screen while fetching user
+  if (loadingUser) {
+    return (
+      <div className="min-h-screen w-full bg-gray-900 text-white font-mono flex items-center justify-center">
+        <div className="text-center">
+          <div className="loader mb-4 mx-auto"></div>
+          <h2 className="text-xl text-green-400 mb-2">Loading Dashboard...</h2>
+          <p className="text-gray-400">Please wait while we fetch your data</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
-      <div className="w-screen h-screen bg-gray-900 text-white font-mono p-4 md:p-6 flex flex-col items-center overflow-hidden">
-        {/* Header with user info and logout */}
-        <div className="w-full max-w-5xl flex justify-between items-center mb-6 bg-gray-800 p-4 rounded-lg shadow-lg border-l-4 border-green-500">
+      <div className="min-h-screen w-full bg-gray-900 text-white font-mono overflow-y-auto custom-scrollbar">
+        <div className="container mx-auto px-4 py-6 max-w-6xl">
+          {/* Header with user info and logout */}
+          <div className="w-full flex justify-between items-center mb-6 bg-gray-800 p-4 rounded-lg shadow-lg border-l-4 border-green-500">
           <h1 className="text-2xl md:text-3xl font-bold tracking-wider flex items-center">
             <span className="text-3xl md:text-4xl mr-2 text-green-400">🔗</span>
             <span className="text-green-400">URL SHORTENER</span>
@@ -275,12 +310,12 @@ function Dashboard() {
           )}
         </div>
 
-        <div className="w-full max-w-5xl flex flex-col md:flex-row gap-6">
+        <div className="w-full flex flex-col lg:flex-row gap-6">
           {/* Left Column - URL Creation Form */}
-          <div className="w-full md:w-2/5">
+          <div className="w-full lg:w-2/5">
             <form
               onSubmit={handleSubmit}
-              className="w-full h-full flex flex-col space-y-4 bg-gray-800 p-5 rounded-lg border-l-4 border-green-500 shadow-lg"
+              className="w-full flex flex-col space-y-6 bg-gray-800 p-6 rounded-lg border-l-4 border-green-500 shadow-lg"
             >
               <h2 className="text-xl font-bold text-green-400 border-b border-gray-700 pb-2">
                 Create Short URL
@@ -296,11 +331,14 @@ function Dashboard() {
                 <div className="relative">
                   <input
                     id="longUrl"
-                    type="text"
+                    type="url"
                     placeholder="https://example.com/very-long-url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    className="bg-gray-900 border border-gray-700 text-green-300 px-4 py-3 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 w-full text-sm"
+                    disabled={submitting}
+                    className={`bg-gray-900 border border-gray-700 text-green-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 w-full text-sm transition-all duration-200 ${
+                      submitting ? 'opacity-50 cursor-not-allowed' : 'hover:border-green-600'
+                    }`}
                   />
                 </div>
               </div>
@@ -312,33 +350,59 @@ function Dashboard() {
                 >
                   <span className="mr-2">🏷️</span> Custom Slug (Optional)
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 text-xs">
-                      {BASE_URL.replace(/^https?:\/\//, '')}/
-                    </span>
+                <div className="space-y-2">
+                  <div className="flex items-center text-xs text-gray-400 bg-gray-800 px-3 py-2 rounded-md border border-gray-700">
+                    <span className="text-green-400 mr-1">🌐</span>
+                    <span className="break-all">{BASE_URL.replace(/^https?:\/\//, '')}/</span>
+                    <span className="text-green-300 font-semibold">your-custom-slug</span>
                   </div>
                   <input
                     id="customSlug"
                     type="text"
-                    placeholder="my-custom-url"
+                    placeholder="Enter custom slug (optional)"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="bg-gray-900 border border-gray-700 text-green-300 pl-48 px-4 py-3 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 w-full text-sm"
+                    disabled={submitting}
+                    className={`bg-gray-900 border border-gray-700 text-green-300 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 w-full text-sm transition-all duration-200 ${
+                      submitting ? 'opacity-50 cursor-not-allowed' : 'hover:border-green-600'
+                    }`}
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="bg-green-600 text-white font-bold py-3 text-base hover:bg-green-700 transition rounded-md mt-2 flex items-center justify-center shadow-md"
+                disabled={submitting || !url.trim()}
+                className={`font-bold py-4 text-base transition-all duration-200 rounded-md mt-4 flex items-center justify-center shadow-lg transform ${
+                  submitting || !url.trim()
+                    ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                    : 'bg-green-600 hover:bg-green-700 hover:scale-105 text-white shadow-green-500/25'
+                }`}
               >
-                <span className="mr-2">⚡</span> SHORTEN THIS LINK
+                {submitting ? (
+                  <>
+                    <div className="loader mr-3"></div>
+                    <span className="animate-pulse">SHORTENING...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="mr-2 text-lg">⚡</span>
+                    <span className="font-semibold">SHORTEN THIS LINK</span>
+                  </>
+                )}
               </button>
 
               {error && (
-                <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-400 p-3 rounded-md text-sm">
-                  {error}
+                <div className="bg-red-900 bg-opacity-40 border border-red-500 text-red-300 p-4 rounded-md text-sm flex items-center animate-pulse">
+                  <span className="mr-2 text-lg">❌</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {success && (
+                <div className="bg-green-900 bg-opacity-40 border border-green-500 text-green-300 p-4 rounded-md text-sm flex items-center animate-bounce">
+                  <span className="mr-2 text-lg">✅</span>
+                  <span>{success}</span>
                 </div>
               )}
 
@@ -387,8 +451,8 @@ function Dashboard() {
           </div>
 
           {/* Right Column - URL List */}
-          <div className="w-full md:w-3/5">
-            <div className="bg-gray-800 rounded-lg border-l-4 border-green-500 shadow-lg h-full">
+          <div className="w-full lg:w-3/5">
+            <div className="bg-gray-800 rounded-lg border-l-4 border-green-500 shadow-lg min-h-96">
               <div className="flex justify-between items-center p-4 border-b border-gray-700">
                 <h2 className="text-xl font-bold text-green-400 flex items-center">
                   <span className="mr-2">📋</span> Your URLs
@@ -417,15 +481,16 @@ function Dashboard() {
                     Go to Login
                   </Link>
                 </div>
-              ) : loading ? (
+              ) : loadingUrls ? (
                 <div className="flex justify-center items-center h-64">
-                  <div className="text-yellow-400 animate-pulse flex flex-col items-center">
-                    <div className="loader mb-2"></div>
-                    <p>Loading your URLs...</p>
+                  <div className="text-yellow-400 flex flex-col items-center">
+                    <div className="loader mb-4"></div>
+                    <p className="animate-pulse text-lg">Loading your URLs...</p>
+                    <p className="text-gray-500 text-sm mt-2">Please wait while we fetch your data</p>
                   </div>
                 </div>
               ) : userUrls.length > 0 ? (
-                <div className="h-[calc(100vh-280px)] overflow-y-auto custom-scrollbar p-3">
+                <div className="max-h-80 overflow-y-auto custom-scrollbar p-4">
                   <div className="space-y-3">
                     {userUrls.reverse().map((item) => (
                       <div
@@ -533,6 +598,7 @@ function Dashboard() {
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </>
