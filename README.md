@@ -43,7 +43,7 @@ git clone https://github.com/AjayNaik01/url-shortner.git
 cd url-shortener
 ```
 
-### Backend Setup
+### BackendSetup
 
 ```bash
 cd BACKEND
