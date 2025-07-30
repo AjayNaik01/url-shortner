@@ -276,12 +276,12 @@ function Dashboard() {
 
   return (
     <>
-      <div className="min-h-screen w-full bg-gray-900 text-white font-mono overflow-y-auto custom-scrollbar">
-        <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="h-screen w-full bg-gray-900 text-white font-mono flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col px-4 py-3 max-w-7xl mx-auto w-full">
           {/* Header with user info and logout */}
-          <div className="w-full flex justify-between items-center mb-6 bg-gray-800 p-4 rounded-lg shadow-lg border-l-4 border-green-500">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-wider flex items-center">
-            <span className="text-3xl md:text-4xl mr-2 text-green-400">🔗</span>
+          <div className="w-full flex justify-between items-center mb-4 bg-gray-800 p-3 rounded-lg shadow-lg border-l-4 border-green-500 flex-shrink-0">
+          <h1 className="text-xl md:text-2xl font-bold tracking-wider flex items-center">
+            <span className="text-2xl md:text-3xl mr-2 text-green-400">🔗</span>
             <span className="text-green-400">URL SHORTENER</span>
           </h1>
 
@@ -310,14 +310,14 @@ function Dashboard() {
           )}
         </div>
 
-        <div className="w-full flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 flex flex-col lg:flex-row gap-4 min-h-0">
           {/* Left Column - URL Creation Form */}
-          <div className="w-full lg:w-2/5">
+          <div className="w-full lg:w-2/5 flex-shrink-0">
             <form
               onSubmit={handleSubmit}
-              className="w-full flex flex-col space-y-6 bg-gray-800 p-6 rounded-lg border-l-4 border-green-500 shadow-lg"
+              className="w-full flex flex-col space-y-4 bg-gray-800 p-4 rounded-lg border-l-4 border-green-500 shadow-lg h-fit"
             >
-              <h2 className="text-xl font-bold text-green-400 border-b border-gray-700 pb-2">
+              <h2 className="text-lg font-bold text-green-400 border-b border-gray-700 pb-2">
                 Create Short URL
               </h2>
 
@@ -451,13 +451,13 @@ function Dashboard() {
           </div>
 
           {/* Right Column - URL List */}
-          <div className="w-full lg:w-3/5">
-            <div className="bg-gray-800 rounded-lg border-l-4 border-green-500 shadow-lg min-h-96">
-              <div className="flex justify-between items-center p-4 border-b border-gray-700">
-                <h2 className="text-xl font-bold text-green-400 flex items-center">
+          <div className="w-full lg:w-3/5 flex-1 min-h-0">
+            <div className="bg-gray-800 rounded-lg border-l-4 border-green-500 shadow-lg h-full flex flex-col">
+              <div className="flex justify-between items-center p-3 border-b border-gray-700 flex-shrink-0">
+                <h2 className="text-lg font-bold text-green-400 flex items-center">
                   <span className="mr-2">📋</span> Your URLs
                 </h2>
-                <span className="bg-green-700 text-xs px-3 py-1 rounded-md text-white">
+                <span className="bg-green-700 text-xs px-2 py-1 rounded-md text-white">
                   {userUrls.length} total
                 </span>
               </div>
@@ -490,12 +490,12 @@ function Dashboard() {
                   </div>
                 </div>
               ) : userUrls.length > 0 ? (
-                <div className="max-h-80 overflow-y-auto custom-scrollbar p-4">
-                  <div className="space-y-3">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3">
+                  <div className="space-y-2">
                     {userUrls.reverse().map((item) => (
                       <div
                         key={item._id}
-                        className="border border-gray-700 rounded-md p-3 bg-gray-900 hover:bg-gray-800 transition-all"
+                        className="border border-gray-700 rounded-md p-2 bg-gray-900 hover:bg-gray-800 transition-all"
                       >
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex items-center">
@@ -526,12 +526,12 @@ function Dashboard() {
                           </p>
                         </div>
 
-                        <div className="flex space-x-2 border-t border-gray-700 pt-2">
+                        <div className="flex space-x-1 border-t border-gray-700 pt-1 mt-2">
                           <a
                             href={`${BASE_URL}/${item.short_url}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded-md transition-colors flex items-center"
+                            className="text-xs bg-green-700 hover:bg-green-800 text-white px-2 py-1 rounded transition-colors flex items-center"
                           >
                             <span className="mr-1">🌐</span> Visit
                           </a>
@@ -551,7 +551,7 @@ function Dashboard() {
                                 );
                               }
                             }}
-                            className="text-xs bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 rounded-md transition-colors flex items-center relative"
+                            className="text-xs bg-blue-700 hover:bg-blue-800 text-white px-2 py-1 rounded transition-colors flex items-center relative"
                           >
                             <span className="mr-1">📋</span> Copy
                             <span
