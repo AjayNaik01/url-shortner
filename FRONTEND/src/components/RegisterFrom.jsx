@@ -16,11 +16,33 @@ function RegisterForm({ onRegister, onToggle }) {
     setError("");
     setSuccess("");
 
+    // Client-side validation
+    if (!name.trim() || !email.trim() || !password) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (name.trim().length < 2) {
+      setError("Name must be at least 2 characters long");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     try {
-      const res = await registerUser(name, email, password);
+      const res = await registerUser(name.trim(), email.trim(), password);
       setSuccess(res.message || "Registration successful!");
       onRegister?.(res);
-      navigate("/login");
+      navigate("/dashboard"); // Navigate to dashboard instead of login
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed.");
     }

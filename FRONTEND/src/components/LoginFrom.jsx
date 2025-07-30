@@ -15,8 +15,20 @@ function LoginForm({ onLogin, onToggle }) {
     setError("");
     setSuccess("");
 
+    // Client-side validation
+    if (!email.trim() || !password) {
+      setError("Email and password are required");
+      return;
+    }
+
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     try {
-      const res = await loginUser(email, password);
+      const res = await loginUser(email.trim(), password);
       setSuccess("Login successful!");
       onLogin?.(res);
       navigate("/dashboard");

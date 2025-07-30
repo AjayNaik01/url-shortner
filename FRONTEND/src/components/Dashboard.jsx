@@ -4,6 +4,9 @@ import { QRCodeSVG } from "qrcode.react";
 import { customShortUrl, getAllUrl } from "../api/shorturl.api";
 import { getCurrentUser, logoutUser } from "../api/user.api";
 
+// Get base URL from environment variables
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || 'https://url-shortner-eight-lime.vercel.app';
+
 function Dashboard() {
   const [url, setUrl] = useState("");
   const [slug, setSlug] = useState("");
@@ -312,7 +315,7 @@ function Dashboard() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span className="text-gray-500 text-xs">
-                      localhost:3000/
+                      {BASE_URL.replace(/^https?:\/\//, '')}/
                     </span>
                   </div>
                   <input
@@ -321,7 +324,7 @@ function Dashboard() {
                     placeholder="my-custom-url"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="bg-gray-900 border border-gray-700 text-green-300 pl-28 px-4 py-3 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 w-full text-sm"
+                    className="bg-gray-900 border border-gray-700 text-green-300 pl-48 px-4 py-3 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 w-full text-sm"
                   />
                 </div>
               </div>
@@ -453,14 +456,14 @@ function Dashboard() {
                           <p className="text-gray-500 text-xs mt-1">
                             <span className="mr-1">🔗</span>
                             <span className="text-green-300">
-                              http://localhost:3000/{item.short_url}
+                              {BASE_URL}/{item.short_url}
                             </span>
                           </p>
                         </div>
 
                         <div className="flex space-x-2 border-t border-gray-700 pt-2">
                           <a
-                            href={`http://localhost:3000/${item.short_url}`}
+                            href={`${BASE_URL}/${item.short_url}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs bg-green-700 hover:bg-green-800 text-white px-3 py-1 rounded-md transition-colors flex items-center"
@@ -470,7 +473,7 @@ function Dashboard() {
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(
-                                `http://localhost:3000/${item.short_url}`
+                                `${BASE_URL}/${item.short_url}`
                               );
                               const el = document.getElementById(
                                 `copy-msg-${item._id}`
@@ -497,7 +500,7 @@ function Dashboard() {
                             onClick={() => {
                               // Generate QR code using the API and download it directly
                               const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-                                `http://localhost:3000/${item.short_url}`
+                                `${BASE_URL}/${item.short_url}`
                               )}`;
 
                               // Create a link element to download the image

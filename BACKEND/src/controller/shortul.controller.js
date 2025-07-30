@@ -92,7 +92,7 @@ export const createCustomShortUrl = async (req, res) => {
     await newUrl.save();
     console.log("Saved URL:", JSON.stringify(newUrl.toObject()));
 
-    const baseUrl = process.env.APP_URL?.replace(/\/+$/, '') || 'http://localhost:3000';
+    const baseUrl = process.env.APP_URL?.replace(/\/+$/, '') || 'https://url-shortner-eight-lime.vercel.app';
     res.status(201).json({
         shortUrl: `${baseUrl}/${customShort}`,
         message: "Short URL created successfully"

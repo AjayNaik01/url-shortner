@@ -54,7 +54,8 @@ Create a `.env` file in the BACKEND directory with the following variables:
 
 ```
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/url-shortener
+APP_URL=https://your-deployed-backend-url.vercel.app
+MONGODB_URI=mongodb+srv://your_mongodb_atlas_connection_string
 JWT_SECRET=your_jwt_secret_key
 ```
 
@@ -74,7 +75,8 @@ npm install
 Create a `.env` file in the FRONTEND directory with:
 
 ```
-REACT_APP_API_URL=http://localhost:3000
+VITE_API_BASE_URL=https://your-deployed-backend-url.vercel.app
+VITE_APP_BASE_URL=https://your-deployed-backend-url.vercel.app
 ```
 
 Start the frontend development server:
