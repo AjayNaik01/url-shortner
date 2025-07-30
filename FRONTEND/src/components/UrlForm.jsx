@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createShortUrl } from "../api/shorturl.api";
 
-// Get base URL from environment variables
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || 'https://url-shortner-eight-lime.vercel.app';
-
 function UrlForm() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -28,8 +25,8 @@ function UrlForm() {
     setLoading(true);
     try {
       const response = await createShortUrl(url);
-      const fullShortUrl = `${BASE_URL}/${response.data.short_url}`;
-      setShortUrl(fullShortUrl);
+      // Backend already returns the full URL in shortUrl field
+      setShortUrl(response.data.shortUrl);
       setSuccess("✅ URL shortened successfully!");
       setUrl(""); // Clear the input
       // Clear success message after 3 seconds

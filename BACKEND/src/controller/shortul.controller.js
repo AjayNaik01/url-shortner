@@ -11,7 +11,8 @@ export const createShortUrl = async (req, res) => {
         if (!url) return res.status(400).json({ error: "URL is required" });
 
         const shortUrl = await createShortUrlService(url);
-        res.json({ short_url: process.env.APP_URL + shortUrl });
+        const baseUrl = process.env.APP_URL?.replace(/\/+$/, '') || 'https://url-shortner-eight-lime.vercel.app';
+        res.json({ shortUrl: `${baseUrl}/${shortUrl}` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -23,7 +24,8 @@ export const createShortUrlWithUSerId = async (req, res) => {
         if (!url) return res.status(400).json({ error: "URL is required" });
 
         const shortUrl = await createShortUrlService(url, req.user._id); // ✅ FIXED HERE
-        res.json({ short_url: process.env.APP_URL + shortUrl });
+        const baseUrl = process.env.APP_URL?.replace(/\/+$/, '') || 'https://url-shortner-eight-lime.vercel.app';
+        res.json({ shortUrl: `${baseUrl}/${shortUrl}` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
